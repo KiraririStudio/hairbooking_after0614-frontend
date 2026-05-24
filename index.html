@@ -574,9 +574,9 @@ function prepareConfirm(){
   const pay = paycodeEl.value.trim();  
   const hair = hairStyleEl.value;
   const makeup = makeupEl.value; 
-  // ✅ 顯示用文字（重點🔥）
-  const hairText = hairValue === "none" ? "無" : hairValue;
-  const makeupText = makeupValue === "none" ? "無" : makeupValue;
+  // ✅ 顯示用文字（重點🔥）  
+  const hairText = hair === "none" ? "無" : hair;
+  const makeupText = makeup === "none" ? "無" : makeup;
   const kimono = kimonoEl.checked;
   const photo = photoEl.checked;
 
