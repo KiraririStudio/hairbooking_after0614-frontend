@@ -551,7 +551,10 @@ function prepareConfirm(){
   const phone = phoneEl.value.trim();
   const pay = paycodeEl.value.trim();  
   const hair = hairStyleEl.value;
-  const makeup = makeupEl.value;  
+  const makeup = makeupEl.value; 
+  // ✅ 顯示用文字（重點🔥）
+  const hairText = hairValue === "none" ? "無" : hairValue;
+  const makeupText = makeupValue === "none" ? "無" : makeupValue;
   const kimono = kimonoEl.checked;
   const photo = photoEl.checked;
 
@@ -618,9 +621,9 @@ function prepareConfirm(){
     <p style="font-weight:bold">請確認預約資訊</p>
     <div style="text-align:left; display:inline-block;">
       <p><span class="c-label">姓名</span>：${name}</p>
-      <p><span class="c-label">電話</span>：${phone}</p>      
-      <p><span class="c-label">編髮</span>：${hair}</p>
-      <p><span class="c-label">彩妝</span>：${makeup}</p>      
+      <p><span class="c-label">電話</span>：${phone}</p>            
+      <p><span class="c-label">編髮</span>：${hairText}</p>
+      <p><span class="c-label">彩妝</span>：${makeupText}</p>     
       <p><span class="c-label">和服租借</span>：${kimono ? "有" : "無"}</p>
       <p><span class="c-label">攝影服務</span>：${photo ? "有" : "無"}</p>
       <p><span class="c-label">匯款後5碼</span>：${pay}</p>
