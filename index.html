@@ -470,9 +470,23 @@ function resetForm(){
   nameEl.value = "";
   phoneEl.value = "";
   paycodeEl.value = "";
+
+  // ✅ 下拉選單
+  hairStyleEl.value = "";
+  makeupEl.value = "";
+
+  // ✅ checkbox
+  kimonoEl.checked = false;
+  photoEl.checked = false;
+
+  // ✅ 日期 / 時間
   dateSelect.value = "";
   timeSelect.innerHTML = "<option value=''>請先選擇日期</option>";
+
+  // ✅ 金額重置
+  updatePrice();
 }
+
 
 function formatDateLabel(iso){
   const d = new Date(iso);
