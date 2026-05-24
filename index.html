@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>★琉光販賣所-日系編髮線上預約★</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&;family=Noto+Sans+TC:wght@400;600&;display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f6f1eb;
+  --card: #fffaf4;
+  --primary: #b48a63;
+  --primary-dark: #9c7350;
+  --text: #4a3b2c;
+  --hint: #9a8f84;
+}
+
+.c-label {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+}
+
+
+* {
+  box-sizing: border-box;
+  font-family: "Noto Sans TC","Microsoft JhengHei",sans-serif;
+}
+
+body {
+  background: linear-gradient(180deg,#f6f1eb,#ede3d7);
+  padding: 40px 16px;
+  color: var(--text);
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  background: var(--card);
+  padding: 28px;
+  border-radius: 22px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+}
+
+/* 標題 */
+h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 22px;
+  line-height: 1.4;
+}
+.subtitle {
+  display:block;
+  font-size:14px;
+  color:#9a8f84;
+  margin-top:4px;
+  letter-spacing:2px;
+}
+
+/* 表單 */
+.field {
+  margin-bottom: 14px;
+}
+
+label {
+  display:block;
+  font-size:14px;
+}
+
+input, select {
+  width:100%;
+  margin-top:6px;
+  font-size:15px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
+}
+
+.hint {
+  margin-top:6px;
+  font-size:12px;
+  color: var(--hint);
+}
+
+/* 按鈕 */
+button {
+  width:100%;
+  margin-top: 26px;
+  padding: 14px;
+  background: linear-gradient(135deg,#b48a63,#caa684);
+  border:none;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:bold;
+  color:white;
+  letter-spacing:1px;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(180,138,99,0.35);
+  transition: all 0.2s ease;
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow:0 12px 22px rgba(180,138,99,0.45);
+}
+
+/* 匯款區 */
+.bank-info {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg,#f7efe8,#fdf8f2);
+  border: 1px dashed #d8c9b8;
+}
+.bank-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #6b5a4a;
+}
+.bank-row {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.bank-note {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--hint);
+}
+
+/* modal */
+.modal {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.modal-box {
+  background:white;
+  padding:24px;
+  border-radius:16px;
+  max-width:340px;
+  width:90%;
+  text-align:center;
+}
+
+/* loading */
+
+.loading {
+  position: fixed;
+  inset: 0;
+
+  /* ✅ 從 0.75 → 0.4（變淡） */
+  background: rgba(246,241,235,0.4);
+
+  display: none;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(4px);   /* ✅ 加毛玻璃（質感提升🔥） */
+}
+
+.spinner {
+  width: 60px;              /* ✅ 變大（原46） */
+  height: 60px;
+
+  border: 5px solid rgba(180,138,99,0.2);  /* ✅ 淡底 */
+  border-top: 5px solid #b48a63;            /* ✅ 主色 */
+
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;   /* ✅ 稍微快一點 */
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+  
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+  
+.loading-text {
+  margin-top: 16px;
+
+  font-family: "Playfair Display", "Noto Sans TC", serif;  /* ✅ 混搭 */
+  font-size: 18px;
+  font-weight: 500;
+
+  letter-spacing: 4px;
+  color: #b48a63;
+
+  text-transform: lowercase;  /* ✅ kirariri 比較好看 */
+
+  text-shadow: 0 0 8px rgba(180,138,99,0.4);
+
+  animation: fadeBlink 1.5s ease-in-out infinite;
+  text-align: center;
+}
+
+
+
+/* 呼吸閃爍效果 */
+@keyframes fadeBlink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.sparkle {
+  display: inline-block;
+  animation: sparkleGlow 1.8s infinite;
+}
+
+/* 讓左右不完全同步（更自然） */
+.sparkle:nth-child(1) {
+  animation-delay: 0s;
+}
+.sparkle:nth-child(2) {
+  animation-delay: 0.9s;
+}
+
+@keyframes sparkleGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+    color: #d4a373;
+    text-shadow: 0 0 6px rgba(180,138,99,0.5);
+  }
+}
+
+/* 加購區 */
+.addon-group {
+  margin-top: 28px;   /* ✅ 和上面拉開 */
+  margin-bottom: 24px; /* ✅ 和下面拉開 */
+}
+
+/* 每一行 */
+.addon-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;   /* ✅ 行距變大 */
+  cursor: pointer;
+}
+
+/* 隱藏原本 checkbox */
+.addon-line input {
+  display: none;
+}
+
+/* checkbox */
+.checkmark {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #b48a63;
+  border-radius: 4px;
+  position: relative;
+}
+
+/* 勾選 */
+.addon-line input:checked + .checkmark {
+  background: #b48a63;
+}
+
+.addon-line input:checked + .checkmark::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* 文字 */
+.addon-text {
+  font-size: 14px;
+  line-height: 1.6;  /* ✅ 文字不擠 */
+  color: #4a3b2c;
+}
+
+.field {
+  margin-bottom: 20px;  /* ✅ 原本14 → 放大 */
+}
+
+.addon-line:hover {
+  opacity: 0.75;
+}
+
+.slot-display {
+  margin-top: 14px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #9c7350;
+}
+
+.total-section {
+  margin-top: 24px;
+  text-align: center;
+  padding: 16px;
+  border-radius: 14px;
+  background: #f9f4ee;   /* ✅ 淺色區塊 */
+  border: 1px solid #eee;
+}
+
+.total-title {
+  font-size: 16px;
+  font-weight: 600;  /* ✅ 稍微加粗 */
+  color: #9a8f84;
+  margin-bottom: 6px;
+}
+
+
+  
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  
+  <h2>
+    <span class="sparkle">✧</span>
+    琉光販賣所
+    <span class="sparkle">✧</span>
+    <span class="subtitle">日系妝造預約</span>
+  </h2>
+
+  <div class="field">
+    <label>👤 姓名</label>
+    <input id="name" placeholder="請輸入姓名">
+    <div class="hint">請填寫全名以利核對</div>
+  </div>
+
+  <div class="field">
+    <label>📞 電話</label>
+    <input id="phone" placeholder="0912345678" maxlength="10">
+    <div class="hint">請輸入 10 碼手機號碼</div>
+  </div>
+
+  <div class="field">
+    <label>💇‍♀️ 編髮</label>
+    <select id="hairStyle">
+      <option value="" disabled selected>請選擇編髮</option>
+      <option value="none">無</option>
+      <option value="少女編髮">少女編髮</option>
+      <option value="華族編髮">華族編髮</option>
+      <option value="公主編髮">公主編髮</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>💄 彩妝</label>    
+    <select id="makeup">
+      <option value="" disabled selected>請選擇彩妝</option>
+      <option value="none">無</option>
+      <option value="少女彩妝">少女彩妝</option>
+      <option value="華族彩妝">華族彩妝</option>
+      <option value="公主彩妝">公主彩妝</option>
+    </select>
+  </div>
+
+  <div class="addon-group">
+
+    <label class="addon-line">
+      <input type="checkbox" id="kimono">
+      <span class="checkmark"></span>
+      <span class="addon-text">加購和服租借（租借費 500 元）</span>
+    </label>
+
+    <label class="addon-line">
+      <input type="checkbox" id="photo">
+      <span class="checkmark"></span>
+      <span class="addon-text">
+        加購攝影服務（請私訊官方安排攝影師 當天付款）
+      </span>
+    </label>
+
+  </div>
+
+  <div class="field">
+    <label>📅 日期</label>
+    <select id="dateSelect">
+      <option value="" disabled selected>請選擇可預約日期</option>
+    </select>
+    <div class="hint">若日期未出現代表該日已額滿</div>
+  </div>
+
+  <div class="field">
+    <label>⏰ 時間</label>
+    <select id="timeSelect">
+      <option value="" disabled selected>請先選擇日期</option>
+    </select>
+    <div class="hint">請先選擇日期後再選時間</div>
+  </div>
+
+  <div class="field">
+    <label>💰 匯款後5碼</label>
+    <input id="paycode" placeholder="12345" maxlength="5">
+    <div class="hint">請填寫轉帳完成後的帳號末 5 碼</div>
+  </div>
+  
+  <div class="total-section">
+    <div class="total-title">預約總金額</div>
+    <div class="slot-display" id="slotDisplay">$0</div>
+  </div>
+
+  <div class="bank-info">
+    <div class="bank-title">匯款資訊</div>
+    <div class="bank-row">銀行：永豐銀行（807）</div>
+    <div class="bank-row">帳號：20001800284131</div>
+    <div class="bank-note">※ 完成匯款後，請填寫上方匯款後5碼</div>
+    <div class="bank-note">匯款完成請私訊 kirariri studio 確認</div>
+    <div class="bank-note">IG：kirariri_studio</div>
+  </div>
+
+  <button onclick="prepareConfirm()">送出預約</button>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">kirariri studio</div>
+</div>
+
+<script>
+const BACKEND = "https://hairbooking-backend.onrender.com";
+const WEEKDAY = ["日","一","二","三","四","五","六"];
+
+const dateSelect = document.getElementById("dateSelect");
+const timeSelect = document.getElementById("timeSelect");
+const modal = document.getElementById("modal");
+const modalBox = document.getElementById("modalBox");
+const loading = document.getElementById("loading");
+
+const nameEl = document.getElementById("name");
+const phoneEl = document.getElementById("phone");
+const paycodeEl = document.getElementById("paycode");
+const hairStyleEl = document.getElementById("hairStyle");
+const makeupEl = document.getElementById("makeup");
+const kimonoEl = document.getElementById("kimono");
+const photoEl = document.getElementById("photo");
+
+
+function showLoading(){ loading.style.display="flex"; }
+function hideLoading(){ loading.style.display="none"; }
+
+function showModal(html){
+  modalBox.innerHTML = html;
+  modal.style.display = "flex";
+}
+function closeModal(){
+  modal.style.display = "none";
+}
+
+function resetForm(){
+  nameEl.value = "";
+  phoneEl.value = "";
+  paycodeEl.value = "";
+  dateSelect.value = "";
+  timeSelect.innerHTML = "<option value=''>請先選擇日期</option>";
+}
+
+function formatDateLabel(iso){
+  const d = new Date(iso);
+  const m = d.getMonth() + 1;
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${m}月${day}日（${WEEKDAY[d.getDay()]}）`;
+}
+
+showLoading();
+fetch(`${BACKEND}/available-dates`)
+  .then(r => r.json())
+  .then(list => {
+    list.forEach(d => {
+      const opt = document.createElement("option");
+      opt.value = d.value;
+      opt.textContent = formatDateLabel(d.value);
+      dateSelect.appendChild(opt);
+    });
+  })
+  .finally(() => hideLoading());
+
+dateSelect.addEventListener("change", () => {
+  timeSelect.innerHTML = "<option value=''>請先選擇日期</option>";
+  if (!dateSelect.value) return;
+
+  showLoading();
+  const duration = getDuration();
+  fetch(`${BACKEND}/available-times?date=${dateSelect.value}&duration=${duration}`) 
+    .then(r => r.json())
+    .then(times => {
+      if (!times.length) {
+        const opt = document.createElement("option");
+        opt.textContent = "此日已額滿";
+        opt.disabled = true;
+        timeSelect.appendChild(opt);
+        return;
+      }
+      times.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        timeSelect.appendChild(opt);
+      });
+    })
+    .finally(() => hideLoading());
+});
+
+function prepareConfirm(){
+  const name = nameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  const pay = paycodeEl.value.trim();  
+  const hair = hairStyleEl.value;
+  const makeup = makeupEl.value;  
+  const kimono = kimonoEl.checked;
+  const photo = photoEl.checked;
+
+  let total = 0;
+  if (hairStyleEl.value === "少女編髮") total += 300;
+  if (hairStyleEl.value === "華族編髮") total += 600;
+  if (hairStyleEl.value === "公主編髮") total += 1000;
+  if (makeupEl.value === "少女彩妝") total += 500;
+  if (makeupEl.value === "華族彩妝") total += 1000;
+  if (makeupEl.value === "公主彩妝") total += 1500;
+  if (kimonoEl.checked) total += 500;
+  
+  if(
+      !name ||
+      !phone ||
+      !pay ||
+      hair === "" ||
+      makeup === "" ||
+      !dateSelect.value ||
+      !timeSelect.value
+    ){
+      return showModal("<p>請完整填寫所有欄位</p><button onclick='closeModal()'>確定</button>");
+    }
+
+  if (hairStyleEl.value === "none" && makeupEl.value === "none") {
+    return showModal("<p>請至少選擇編髮或彩妝其中一項</p><button onclick='closeModal()'>確定</button>");
+  }
+
+  if(!/^\d{10}$/.test(phone))
+    return showModal("<p>電話需為10碼數字</p><button onclick='closeModal()'>確定</button>");
+
+  if(!/^\d{5}$/.test(pay))
+    return showModal("<p>匯款後5碼需為5位數</p><button onclick='closeModal()'>確定</button>");
+
+  showModal(`
+    <p style="font-weight:bold">請確認預約資訊</p>
+    <div style="text-align:left; display:inline-block;">
+      <p><span class="c-label">姓名</span>：${name}</p>
+      <p><span class="c-label">電話</span>：${phone}</p>      
+      <p><span class="c-label">編髮</span>：${hair}</p>
+      <p><span class="c-label">彩妝</span>：${makeup}</p>      
+      <p><span class="c-label">和服租借</span>：${kimono ? "有" : "無"}</p>
+      <p><span class="c-label">攝影服務</span>：${photo ? "有" : "無"}</p>
+      <p><span class="c-label">匯款後5碼</span>：${pay}</p>
+      <p><span class="c-label">日期</span>：${dateSelect.options[dateSelect.selectedIndex].text}</p>
+      <p><span class="c-label">時間</span>：${timeSelect.value}</p>      
+      <p style="margin-top:8px; font-weight:bold;">
+        <span class="c-label">總金額</span>：$${total.toLocaleString()}
+      </p>
+
+    </div>
+
+    <button onclick="submit()">確認送出</button>
+    <button onclick="closeModal()">取消</button>
+  `);
+}
+
+function submit(){
+  showLoading();
+  let total = 0;
+  if (hairStyleEl.value === "少女編髮") total += 300;
+  if (hairStyleEl.value === "華族編髮") total += 600;
+  if (hairStyleEl.value === "公主編髮") total += 1000;
+  if (makeupEl.value === "少女彩妝") total += 500;
+  if (makeupEl.value === "華族彩妝") total += 1000;
+  if (makeupEl.value === "公主彩妝") total += 1500;
+  if (kimonoEl.checked) total += 500;
+
+  fetch(`${BACKEND}/reserve`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({      
+      name:nameEl.value,
+      phone:phoneEl.value,
+      paycode:paycodeEl.value,
+      hair: hairStyleEl.value,
+      makeup: makeupEl.value,      
+      kimono: kimonoEl.checked,   
+      photo: photoEl.checked,              
+      date:dateSelect.value,
+      time:timeSelect.value,
+      total: total
+    })
+  })
+  .then(r=>r.json())
+  .then(()=>{
+    showModal(`      
+      <p style="font-size:18px; animation: pop 0.4s ease;">
+        ✅ 預約成功<br>
+        總金額：$${total.toLocaleString()}
+      </p>
+      
+      <p style="font-size:12px; color: var(--hint); margin-top:8px;">
+        請私訊 kirariri studio 確認<br>
+        IG：kirariri_studio
+      </p>
+    
+      <button onclick='closeModal(); resetForm();'>確定</button>
+    `);
+  })
+  .finally(()=>hideLoading());
+}
+
+// 和服
+kimonoEl.addEventListener("change", function(e) {
+  if (this.checked) {
+    const ok = confirm("確認加購和服租借（訂金500）嗎？");
+    if (!ok) {
+      this.checked = false;
+    }
+  }
+});
+
+// 攝影
+photoEl.addEventListener("change", function(e) {
+  if (this.checked) {
+    const ok = confirm("確認加購攝影服務嗎？（需私訊安排）");
+    if (!ok) {
+      this.checked = false;
+    }
+  }
+});
+
+function updatePrice() {
+  let total = 0;
+
+  /* 編髮 */
+  if (hairStyleEl.value === "少女編髮") total += 300;
+  if (hairStyleEl.value === "華族編髮") total += 600;
+  if (hairStyleEl.value === "公主編髮") total += 1000;
+
+  /* 彩妝 */
+  if (makeupEl.value === "少女彩妝") total += 500;
+  if (makeupEl.value === "華族彩妝") total += 1000;
+  if (makeupEl.value === "公主彩妝") total += 1500;
+
+  /* 和服 */
+  if (kimonoEl.checked) total += 500;
+  
+  document.getElementById("slotDisplay").textContent =
+    total === 0 ? "--" : "$" + total.toLocaleString();
+}
+
+hairStyleEl.addEventListener("change", updatePrice);
+makeupEl.addEventListener("change", updatePrice);
+kimonoEl.addEventListener("change", updatePrice);
+photoEl.addEventListener("change", updatePrice);
+updatePrice();
+
+function getDuration() {
+  const hair = hairStyleEl.value;
+  const makeup = makeupEl.value;
+
+  if (hair !== "none" && makeup !== "none") {
+    return 60;
+  }
+  return 30;
+}
+
+function reloadTimes() {
+  if (!dateSelect.value) return;
+
+  timeSelect.value = "";  // ✅ 加這行（清掉原本選的）
+  
+  showLoading();
+
+  timeSelect.innerHTML = "<option value=''>重新載入時間...</option>";
+
+  const duration = getDuration();
+
+  fetch(`${BACKEND}/available-times?date=${dateSelect.value}&duration=${duration}`)
+    .then(r => r.json())
+    .then(times => {
+      timeSelect.innerHTML = "";
+
+      if (!times.length) {
+        const opt = document.createElement("option");
+        opt.textContent = "此條件下無可預約時間";
+        opt.disabled = true;
+        timeSelect.appendChild(opt);
+        return;
+      }
+
+      times.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        timeSelect.appendChild(opt);
+      });
+    })
+    .finally(() => hideLoading());
+}
+hairStyleEl.addEventListener("change", reloadTimes);
+makeupEl.addEventListener("change", reloadTimes);
+
+
+</script>
+
+</body>
+</html>
