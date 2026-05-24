@@ -535,14 +535,34 @@ fetch(`${BACKEND}/available-dates`)
   .finally(() => hideLoading());
 
 dateSelect.addEventListener("change", () => {
+  const hair = hairStyleEl.value;
+  const makeup = makeupEl.value;
+
+  // ✅ ✅ ✅ 沒選服務 → 不准查時間（核心）
+  if (hair === "" || makeup === "") {
+    showModal("<p>請先選擇編髮與彩妝服務</p><button onclick='closeModal()'>確定</button>");
+    
+    // ✅ 清掉使用者剛選的日期
+    dateSelect.value = "";
+
+    // ✅ 清掉時間選單
+    timeSelect.innerHTML = "<option value=''>請先選擇服務</option>";
+
+    return;
+  }
+
   timeSelect.innerHTML = "<option value=''>請先選擇日期</option>";
   if (!dateSelect.value) return;
 
   showLoading();
   const duration = getDuration();
+
   fetch(`${BACKEND}/available-times?date=${dateSelect.value}&duration=${duration}`) 
     .then(r => r.json())
     .then(times => {
+
+      timeSelect.innerHTML = ""; // ✅ 清空原本內容
+
       if (!times.length) {
         const opt = document.createElement("option");
         opt.textContent = "此日已額滿";
@@ -550,6 +570,7 @@ dateSelect.addEventListener("change", () => {
         timeSelect.appendChild(opt);
         return;
       }
+
       times.forEach(t => {
         const opt = document.createElement("option");
         opt.value = t;
