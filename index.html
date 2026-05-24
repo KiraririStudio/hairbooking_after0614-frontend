@@ -282,10 +282,18 @@ button:hover {
 }
 
 /* 文字 */
+
 .addon-text {
-  font-size: 14px;
-  line-height: 1.6;  /* ✅ 文字不擠 */
-  color: #4a3b2c;
+  display: flex;
+  flex-direction: column;
+}
+  
+.addon-title {
+  line-height: 1.4;
+}
+  
+.addon-note {
+  line-height: 1.4;
 }
 
 .field {
@@ -382,15 +390,11 @@ button:hover {
       <span class="checkmark"></span>
     
       <span class="addon-text">
-        加購攝影服務
-        <br>
-        <span class="addon-sub">
-          （請私訊官方安排攝影師 當天付款）
-        </span>
+        <span class="addon-title">加購攝影服務</span>
+        <span class="addon-note">（請私訊官方安排攝影師 當天付款）</span>
       </span>
     </label>
-
-
+    
   </div>
 
   <div class="field">
