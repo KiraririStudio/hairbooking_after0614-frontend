@@ -511,7 +511,6 @@ fetch(`${BACKEND}/available-dates`)
     });
   })
   .finally(() => hideLoading());
-``
 
 dateSelect.addEventListener("change", () => {
   timeSelect.innerHTML = "<option value=''>請先選擇日期</option>";
@@ -539,6 +538,14 @@ dateSelect.addEventListener("change", () => {
     .finally(() => hideLoading());
 });
 
+function markError(el, isError){
+  if(isError){
+    el.style.border = "2px solid #e74c3c";
+  } else {
+    el.style.border = "1px solid #ddd";
+  }
+}
+
 function prepareConfirm(){
   const name = nameEl.value.trim();
   const phone = phoneEl.value.trim();
@@ -557,27 +564,55 @@ function prepareConfirm(){
   if (makeupEl.value === "公主彩妝") total += 1500;
   if (kimonoEl.checked) total += 500;
   
-  if(
-      !name ||
-      !phone ||
-      !pay ||
-      hair === "" ||
-      makeup === "" ||
-      !dateSelect.value ||
-      !timeSelect.value
-    ){
-      return showModal("<p>請完整填寫所有欄位</p><button onclick='closeModal()'>確定</button>");
-    }
+  let hasError = false;
 
-  if (hairStyleEl.value === "none" && makeupEl.value === "none") {
-    return showModal("<p>請至少選擇編髮或彩妝其中一項</p><button onclick='closeModal()'>確定</button>");
+  // ✅ 標紅欄位
+  markError(nameEl, !name);
+  markError(phoneEl, !phone);
+  markError(paycodeEl, !pay);
+  markError(dateSelect, !dateSelect.value);
+  markError(timeSelect, !timeSelect.value);
+  markError(hairStyleEl, hair === "");
+  markError(makeupEl, makeup === "");
+  
+  // ✅ 基本漏填
+  if(!name || !phone || !pay || !dateSelect.value || !timeSelect.value || hair === "" || makeup === ""){
+    hasError = true;
+  }
+  
+  // ✅ 至少選一種服務
+  if (hair === "none" && makeup === "none") {
+    markError(hairStyleEl, true);
+    markError(makeupEl, true);
+    showModal("<p>請至少選擇編髮或彩妝其中一項</p><button onclick='closeModal()'>確定</button>");
+    return;
+  }
+  
+  // ✅ 電話格式
+  if(phone && !/^\d{10}$/.test(phone)){
+    markError(phoneEl, true);
+    showModal("<p>電話需為10碼數字</p><button onclick='closeModal()'>確定</button>");
+    return;
+  }
+  
+  // ✅ 匯款碼
+  if(pay && !/^\d{5}$/.test(pay)){
+    markError(paycodeEl, true);
+    showModal("<p>匯款後5碼需為5位數</p><button onclick='closeModal()'>確定</button>");
+    return;
+  }
+  
+  // ✅ 有錯就滾動
+  if(hasError){
+    const firstError = document.querySelector('input[style*="e74c3c"], select[style*="e74c3c"]');
+    if(firstError){
+      firstError.scrollIntoView({ behavior:"smooth", block:"center" });
+    }
+  
+    showModal("<p>請將標記欄位填寫完整</p><button onclick='closeModal()'>確定</button>");
+    return;
   }
 
-  if(!/^\d{10}$/.test(phone))
-    return showModal("<p>電話需為10碼數字</p><button onclick='closeModal()'>確定</button>");
-
-  if(!/^\d{5}$/.test(pay))
-    return showModal("<p>匯款後5碼需為5位數</p><button onclick='closeModal()'>確定</button>");
 
   showModal(`
     <p style="font-weight:bold">請確認預約資訊</p>
@@ -739,6 +774,27 @@ function reloadTimes() {
 }
 hairStyleEl.addEventListener("change", reloadTimes);
 makeupEl.addEventListener("change", reloadTimes);
+
+// ✅ ✅ ✅ 小升級（完整）
+[
+  nameEl,
+  phoneEl,
+  paycodeEl,
+  hairStyleEl,
+  makeupEl,
+  dateSelect,
+  timeSelect
+].forEach(el => {
+
+  el.addEventListener("input", () => {
+    el.style.border = "1px solid #ddd";
+  });
+
+  el.addEventListener("change", () => {
+    el.style.border = "1px solid #ddd";
+  });
+
+});
 
 
 </script>
