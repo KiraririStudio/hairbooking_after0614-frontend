@@ -860,6 +860,7 @@ function loadDates() {
   if (!hairStyleEl.value || !makeupEl.value) {
     dateSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
     timeSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
+    hideLoading();
     return;
   }
 
