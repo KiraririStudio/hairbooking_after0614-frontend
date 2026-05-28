@@ -502,7 +502,10 @@ function resetForm(){
 
   // ✅ 日期 / 時間
   dateSelect.value = "";
-  timeSelect.innerHTML = "<option value=''>請先選擇日期</option>";
+  timeSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
+  // 重新套用系統邏輯（關鍵🔥）
+  loadDates();
+
 
   // ✅ 金額重置
   document.getElementById("slotDisplay").textContent = "--";
@@ -857,7 +860,7 @@ function loadDates() {
   // ✅ 還沒選服務 → 不載入日期
   if (!hairStyleEl.value || !makeupEl.value) {
     dateSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
-    timeSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
+    timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
     return;
   }
 
