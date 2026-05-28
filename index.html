@@ -518,21 +518,7 @@ function formatDateLabel(iso){
 }
 
 showLoading();
-fetch(`${BACKEND}/available-dates`)
-  .then(r => r.json())
-  .then(list => {
-
-    // ✅ ✅ ✅ 新前台：只顯示 6/14 後
-    const filtered = list.filter(d => d.value > "2026-06-14");
-
-    filtered.forEach(d => {
-      const opt = document.createElement("option");
-      opt.value = d.value;
-      opt.textContent = formatDateLabel(d.value);
-      dateSelect.appendChild(opt);
-    });
-  })
-  .finally(() => hideLoading());
+loadDates();
 
 dateSelect.addEventListener("change", () => {
   const hair = hairStyleEl.value;
@@ -838,6 +824,9 @@ function reloadTimes() {
 hairStyleEl.addEventListener("change", reloadTimes);
 makeupEl.addEventListener("change", reloadTimes);
 
+hairStyleEl.addEventListener("change", loadDates);
+makeupEl.addEventListener("change", loadDates);
+
 // ✅ ✅ ✅ 小升級（完整）
 [
   nameEl,
@@ -858,6 +847,32 @@ makeupEl.addEventListener("change", reloadTimes);
   });
 
 });
+
+function loadDates() {
+  showLoading();
+
+  const duration = getDuration();
+
+  dateSelect.innerHTML = "<option value='' disabled selected>載入中...</option>";
+  timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
+
+  fetch(`${BACKEND}/available-dates?duration=${duration}`)
+    .then(r => r.json())
+    .then(list => {
+
+      const filtered = list.filter(d => d.value > "2026-06-14");
+
+      dateSelect.innerHTML = "<option value='' disabled selected>請選擇日期</option>";
+
+      filtered.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d.value;
+        opt.textContent = formatDateLabel(d.value);
+        dateSelect.appendChild(opt);
+      });
+    })
+    .finally(() => hideLoading());
+}
 
 
 </script>
