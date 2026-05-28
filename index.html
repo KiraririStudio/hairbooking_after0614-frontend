@@ -782,9 +782,16 @@ function getDuration() {
   const hair = hairStyleEl.value;
   const makeup = makeupEl.value;
 
+  // ✅ 還沒選服務
+  if (!hair || !makeup) {
+    return 30;
+  }
+
+  // ✅ 兩個都有選
   if (hair !== "none" && makeup !== "none") {
     return 60;
   }
+
   return 30;
 }
 
