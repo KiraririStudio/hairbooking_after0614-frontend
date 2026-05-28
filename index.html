@@ -856,6 +856,13 @@ makeupEl.addEventListener("change", loadDates);
 });
 
 function loadDates() {
+  // ✅ 還沒選服務 → 不載入日期
+  if (!hairStyleEl.value || !makeupEl.value) {
+    dateSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
+    timeSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
+    return;
+  }
+
   showLoading();
 
   const duration = getDuration();
@@ -866,7 +873,6 @@ function loadDates() {
   fetch(`${BACKEND}/available-dates?duration=${duration}`)
     .then(r => r.json())
     .then(list => {
-
       const filtered = list.filter(d => d.value > "2026-06-14");
 
       dateSelect.innerHTML = "<option value='' disabled selected>請選擇日期</option>";
