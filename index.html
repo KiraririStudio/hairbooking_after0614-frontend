@@ -930,9 +930,14 @@ makeupEl.addEventListener("change", () => {
     fetch(`${BACKEND}/available-dates?duration=${duration}`)
       .then(r => r.json())
       .then(list => {
+    
+        // ✅ ✅ ✅ 加這行（限制從 6/15 開始）
+        const filtered = list.filter(d => d.value >= "2026-06-15");
+    
         dateSelect.innerHTML = "<option value='' disabled selected>請選擇日期</option>";
-  
-        list.forEach(d => {
+    
+        // ✅ ✅ ✅ 這裡改成 filtered
+        filtered.forEach(d => {
           const opt = document.createElement("option");
           opt.value = d.value;
           opt.textContent = formatDateLabel(d.value);
