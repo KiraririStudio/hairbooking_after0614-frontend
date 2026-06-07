@@ -477,6 +477,18 @@ const makeupEl = document.getElementById("makeup");
 const kimonoEl = document.getElementById("kimono");
 const photoEl = document.getElementById("photo");
 
+let HAIR_ONLY_DATES = [];
+let hasShownHairOnlyHint = false;
+  
+function loadConfig() {
+  fetch(`${BACKEND}/config`)
+    .then(r => r.json())
+    .then(data => {
+      HAIR_ONLY_DATES = data.hair_only_dates || [];
+    });
+}
+
+
 
 function showLoading(){ loading.style.display="flex"; }
 function hideLoading(){ loading.style.display="none"; }
@@ -521,12 +533,45 @@ function formatDateLabel(iso){
   return `${m}月${day}日（${WEEKDAY[d.getDay()]}）`;
 }
 
-loadDates();
+
+function loadConfigAndInit() {
+  fetch(`${BACKEND}/config`)
+    .then(r => r.json())
+    .then(data => {
+      HAIR_ONLY_DATES = data.hair_only_dates || [];
+      loadDates();   // ✅ 保證拿到資料後再跑
+    });
+}
+loadConfigAndInit();
+
 
 dateSelect.addEventListener("change", () => {
   const hair = hairStyleEl.value;
-  const makeup = makeupEl.value;
+  const makeup = makeupEl.value;  
+  const selectedDate = dateSelect.value;
 
+  if (HAIR_ONLY_DATES.includes(selectedDate)) {
+    makeupEl.value = "none";
+    makeupEl.disabled = true;
+    makeupEl.style.opacity = "0.5";
+  
+    if (!hasShownHairOnlyHint) {
+      showModal("<p>此日期僅提供編髮服務</p><button onclick='closeModal()'>確定</button>");
+      hasShownHairOnlyHint = true;
+    }
+  
+  } else {
+    makeupEl.disabled = false;
+    makeupEl.style.opacity = "1";
+  
+    if (makeupEl.value === "none") {
+      makeupEl.value = "";
+    }
+  
+    // ✅ 切回正常日 → 重置提示
+    hasShownHairOnlyHint = false;
+  }
+  
   // ✅ ✅ ✅ 沒選服務 → 不准查時間（核心）
   if (hair === "" || makeup === "") {
     showModal("<p>請先選擇編髮與彩妝服務</p><button onclick='closeModal()'>確定</button>");
