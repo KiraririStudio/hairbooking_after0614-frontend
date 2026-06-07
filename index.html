@@ -881,8 +881,15 @@ function reloadTimes() {
 hairStyleEl.addEventListener("change", reloadTimes);
 makeupEl.addEventListener("change", reloadTimes);
 
-hairStyleEl.addEventListener("change", loadDates);
-makeupEl.addEventListener("change", loadDates);
+hairStyleEl.addEventListener("change", () => {
+  dateSelect.value = "";   // ✅ 清日期
+  loadDates();
+});
+
+makeupEl.addEventListener("change", () => {
+  dateSelect.value = "";   // ✅ 清日期
+  loadDates();
+});
 
 // ✅ ✅ ✅ 小升級（完整）
 [
@@ -905,11 +912,14 @@ makeupEl.addEventListener("change", loadDates);
 
 });
 
-function loadDates() {
-  // ✅ 還沒選服務 → 不載入日期
+  function loadDates() {
+
+  // ✅ ✅ ✅ 先清掉時間（不管怎樣都清）
+  timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
+  timeSelect.value = "";
+
   if (!hairStyleEl.value || !makeupEl.value) {
     dateSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
-    timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
     return;
   }
 
