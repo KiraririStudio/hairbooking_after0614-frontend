@@ -554,6 +554,7 @@ dateSelect.addEventListener("change", () => {
     makeupEl.value = "none";
     makeupEl.disabled = true;
     makeupEl.style.opacity = "0.5";
+    updatePrice();
   
     if (!hasShownHairOnlyHint) {
       showModal("<p>此日期僅提供編髮服務</p><button onclick='closeModal()'>確定</button>");
@@ -566,6 +567,7 @@ dateSelect.addEventListener("change", () => {
   
     if (makeupEl.value === "none") {
       makeupEl.value = "";
+      updatePrice();
     }
   
     // ✅ 切回正常日 → 重置提示
