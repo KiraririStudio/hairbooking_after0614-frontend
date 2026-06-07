@@ -413,7 +413,7 @@ button:hover {
   <div class="field">
     <label>📅 日期</label>
     <select id="dateSelect">
-      <option value="" disabled selected>請選擇可預約日期</option>
+      <option value="" disabled selected>請先選擇服務</option>
     </select>
     <div class="hint">若日期未出現代表該日已額滿</div>
   </div>
@@ -516,7 +516,7 @@ function resetForm(){
 
   // ✅ 日期 / 時間
   dateSelect.value = "";
-  timeSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
+  timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
   // 重新套用系統邏輯（關鍵🔥）
   loadDates();
 
@@ -539,7 +539,6 @@ function loadConfigAndInit() {
     .then(r => r.json())
     .then(data => {
       HAIR_ONLY_DATES = data.hair_only_dates || [];
-      loadDates();   // ✅ 保證拿到資料後再跑
     });
 }
 loadConfigAndInit();
@@ -878,8 +877,8 @@ function reloadTimes() {
     })
     .finally(() => hideLoading());
 }
-hairStyleEl.addEventListener("change", reloadTimes);
-makeupEl.addEventListener("change", reloadTimes);
+//hairStyleEl.addEventListener("change", reloadTimes);
+//makeupEl.addEventListener("change", reloadTimes);
 
 hairStyleEl.addEventListener("change", () => {
   dateSelect.value = "";   // ✅ 清日期
@@ -913,39 +912,35 @@ makeupEl.addEventListener("change", () => {
 });
 
   function loadDates() {
-
-  // ✅ ✅ ✅ 先清掉時間（不管怎樣都清）
-  timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
-  timeSelect.value = "";
-
-  if (!hairStyleEl.value || !makeupEl.value) {
-    dateSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
-    return;
+    // ✅ 只留這一塊
+    timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
+    timeSelect.value = "";
+  
+    if (!hairStyleEl.value || !makeupEl.value) {
+      dateSelect.innerHTML = "<option value='' disabled selected>請先選擇服務</option>";
+      return;
+    }
+  
+    showLoading();
+  
+    const duration = getDuration();
+  
+    dateSelect.innerHTML = "<option value='' disabled selected>載入中...</option>";
+  
+    fetch(`${BACKEND}/available-dates?duration=${duration}`)
+      .then(r => r.json())
+      .then(list => {
+        dateSelect.innerHTML = "<option value='' disabled selected>請選擇日期</option>";
+  
+        list.forEach(d => {
+          const opt = document.createElement("option");
+          opt.value = d.value;
+          opt.textContent = formatDateLabel(d.value);
+          dateSelect.appendChild(opt);
+        });
+      })
+      .finally(() => hideLoading());
   }
-
-  showLoading();
-
-  const duration = getDuration();
-
-  dateSelect.innerHTML = "<option value='' disabled selected>載入中...</option>";
-  timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
-
-  fetch(`${BACKEND}/available-dates?duration=${duration}`)
-    .then(r => r.json())
-    .then(list => {
-      const filtered = list.filter(d => d.value > "2026-06-14");
-
-      dateSelect.innerHTML = "<option value='' disabled selected>請選擇日期</option>";
-
-      filtered.forEach(d => {
-        const opt = document.createElement("option");
-        opt.value = d.value;
-        opt.textContent = formatDateLabel(d.value);
-        dateSelect.appendChild(opt);
-      });
-    })
-    .finally(() => hideLoading());
-}
 
 
 </script>
