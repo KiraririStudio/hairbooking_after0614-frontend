@@ -479,6 +479,7 @@ const photoEl = document.getElementById("photo");
 
 let HAIR_ONLY_DATES = [];
 let hasShownHairOnlyHint = false;
+let isAutoSetMakeup = false;   // ✅ 新增這行（記錄是不是系統改的）
   
 function loadConfig() {
   fetch(`${BACKEND}/config`)
@@ -553,6 +554,7 @@ dateSelect.addEventListener("change", () => {
     makeupEl.value = "none";
     makeupEl.disabled = true;
     makeupEl.style.opacity = "0.5";
+    isAutoSetMakeup = true;
     updatePrice();
   
     if (!hasShownHairOnlyHint) {
@@ -564,10 +566,12 @@ dateSelect.addEventListener("change", () => {
     makeupEl.disabled = false;
     makeupEl.style.opacity = "1";
   
-    if (makeupEl.value === "none") {
-      makeupEl.value = "";
-      updatePrice();
-    }
+  if (isAutoSetMakeup) {
+    makeupEl.value = "";
+    isAutoSetMakeup = false;   // ✅ 記得重置
+    updatePrice();
+  }
+
   
     // ✅ 切回正常日 → 重置提示
     hasShownHairOnlyHint = false;
@@ -581,7 +585,7 @@ dateSelect.addEventListener("change", () => {
     dateSelect.value = "";
 
     // ✅ 清掉時間選單
-    timeSelect.innerHTML = "<option value=''>請先選擇服務</option>";
+    timeSelect.innerHTML = "<option value=''>請先選擇日期</option>";
 
     return;
   }
