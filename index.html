@@ -356,6 +356,35 @@ button:hover {
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
+
+.paycode-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.member-btn{
+  width:auto;
+  margin:0;
+
+  padding:6px 12px;
+
+  background:#b48a63;
+  color:white;
+
+  border:none;
+  border-radius:999px;
+
+  font-size:12px;
+  font-weight:600;
+
+  box-shadow:none;
+}
+
+.member-btn:hover{
+  transform:none;
+  opacity:0.9;
+}
   
 </style>
 </head>
@@ -457,7 +486,17 @@ button:hover {
   </div>
 
   <div class="field">
-    <label>💰 匯款後5碼</label>
+    
+<label class="paycode-header">
+    <span>💰 匯款後5碼</span>
+    <button
+      type="button"
+      class="member-btn"
+      onclick="goMembership()">
+      會員儲值
+    </button>
+    </label>
+
     <input id="paycode" placeholder="12345" maxlength="5">
     <div class="hint">請填寫轉帳完成後的帳號末 5 碼</div>
   </div>
@@ -985,6 +1024,9 @@ makeupEl.addEventListener("change", () => {
       .finally(() => hideLoading());
   }
 
+  function goMembership(){
+    window.location.href = "membership.html";
+  }
 
 </script>
 
