@@ -779,7 +779,11 @@ function prepareConfirm(){
   }
   if(memberPrincessEl.checked){
     memberText = "公主會員";
-  }
+  }  
+  const hasMember =
+    memberGirlEl.checked ||
+    memberNobleEl.checked ||
+    memberPrincessEl.checked;
 
   let total = 0;
   if (hairStyleEl.value === "少女編髮") total += 300;
@@ -852,10 +856,21 @@ function prepareConfirm(){
       <p><span class="c-label">會員</span>：${memberText}</p>
       <p><span class="c-label">匯款後5碼</span>：${pay}</p>
       <p><span class="c-label">日期</span>：${dateSelect.options[dateSelect.selectedIndex].text}</p>
-      <p><span class="c-label">時間</span>：${timeSelect.value}</p>      
-      <p style="margin-top:8px; font-weight:bold;">
-        <span class="c-label">總金額</span>：$${total.toLocaleString()}
-      </p>
+      <p><span class="c-label">時間</span>：${timeSelect.value}</p>        
+      ${
+        hasMember
+        ? `
+          <p style="margin-top:8px; font-weight:bold;">
+            <span class="c-label">總金額</span>：當日出示會員卡扣除金額
+          </p>
+        `
+        : `
+          <p style="margin-top:8px; font-weight:bold;">
+            <span class="c-label">總金額</span>：$${total.toLocaleString()}
+          </p>
+        `
+      }
+
 
     </div>
 
@@ -885,7 +900,11 @@ function submit(){
   }
   if(memberPrincessEl.checked){
     membership = "公主會員";
-  }
+  }  
+  const hasMember =
+    memberGirlEl.checked ||
+    memberNobleEl.checked ||
+    memberPrincessEl.checked;
 
   fetch(`${BACKEND}/reserve`,{
     method:"POST",
@@ -916,9 +935,11 @@ function submit(){
   })
   .then(() => {
     showModal(`      
-      <p style="font-size:18px; animation: pop 0.4s ease;">
-        ✅ 預約成功<br>
-        總金額：$${total.toLocaleString()}
+      <p style="font-size:18px; animation: pop 0.4s ease;">        
+        ${hasMember
+          ? `✅ 預約成功<br>請於當日出示會員卡確認折抵金額`
+          : `✅ 預約成功<br>總金額：$${total.toLocaleString()}`
+        }
       </p>
 
       <p style="font-size:12px; color: var(--hint); margin-top:8px;">
