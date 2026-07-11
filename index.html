@@ -356,6 +356,42 @@ button:hover {
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
+
+.member-group{
+  display:flex;
+  justify-content:flex-start;
+  gap:36px;
+  margin-top:12px;
+}
+
+.member-line{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+}
+
+.member-line input{
+  display:none;
+}
+
+
+.member-line input:checked + .checkmark {
+  background: #b48a63;
+}
+
+.member-line input:checked + .checkmark::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
   
 </style>
 </head>
@@ -456,10 +492,31 @@ button:hover {
     <div class="hint">請先選擇日期後再選時間</div>
   </div>
 
-  <div class="field">    
+  <div class="field">
     <label>💰 匯款後5碼</label>
     <input id="paycode" placeholder="12345" maxlength="5">
     <div class="hint">請填寫轉帳完成後的帳號末 5 碼</div>
+  </div>
+
+  <div class="field">
+    <label>👑 我有會員</label>
+    <div class="member-group">
+      <label class="member-line">
+        <input type="checkbox" id="memberGirl">
+        <span class="checkmark"></span>
+        <span>少女會員</span>
+      </label>
+      <label class="member-line">
+        <input type="checkbox" id="memberNoble">
+        <span class="checkmark"></span>
+        <span>華族會員</span>
+      </label>
+      <label class="member-line">
+        <input type="checkbox" id="memberPrincess">
+        <span class="checkmark"></span>
+        <span>公主會員</span>
+      </label>
+    </div>
   </div>
   
   <div class="total-section">
@@ -511,6 +568,39 @@ const makeupEl = document.getElementById("makeup");
 const kimonoEl = document.getElementById("kimono");
 const photoEl = document.getElementById("photo");
 
+const memberGirlEl = document.getElementById("memberGirl");
+const memberNobleEl = document.getElementById("memberNoble");
+const memberPrincessEl = document.getElementById("memberPrincess");
+function selectMember(target){
+
+  [
+    memberGirlEl,
+    memberNobleEl,
+    memberPrincessEl
+  ].forEach(el => {
+
+    if(el !== target){
+      el.checked = false;
+    }
+
+  });
+
+  updatePrice();
+}
+
+memberGirlEl.addEventListener("change", () => {
+  selectMember(memberGirlEl);
+});
+
+memberNobleEl.addEventListener("change", () => {
+  selectMember(memberNobleEl);
+});
+
+memberPrincessEl.addEventListener("change", () => {
+  selectMember(memberPrincessEl);
+});
+
+
 let HAIR_ONLY_DATES = [];
 let hasShownHairOnlyHint = false;
 let isAutoSetMakeup = false;   // ✅ 新增這行（記錄是不是系統改的）
@@ -552,6 +642,12 @@ function resetForm(){
   // ✅ 日期 / 時間
   dateSelect.value = "";
   timeSelect.innerHTML = "<option value='' disabled selected>請先選擇日期</option>";
+  
+  // ✅ 會員
+  memberGirlEl.checked = false;
+  memberNobleEl.checked = false;
+  memberPrincessEl.checked = false;
+
   // 重新套用系統邏輯（關鍵🔥）
   loadDates();
 
@@ -673,6 +769,17 @@ function prepareConfirm(){
   const makeupText = makeup === "none" ? "無" : makeup;
   const kimono = kimonoEl.checked;
   const photo = photoEl.checked;
+  
+  let memberText = "無";
+  if(memberGirlEl.checked){
+    memberText = "少女會員";
+  }
+  if(memberNobleEl.checked){
+    memberText = "華族會員";
+  }
+  if(memberPrincessEl.checked){
+    memberText = "公主會員";
+  }
 
   let total = 0;
   if (hairStyleEl.value === "少女編髮") total += 300;
@@ -742,6 +849,7 @@ function prepareConfirm(){
       <p><span class="c-label">彩妝</span>：${makeupText}</p>     
       <p><span class="c-label">和服租借</span>：${kimono ? "有" : "無"}</p>
       <p><span class="c-label">攝影服務</span>：${photo ? "有" : "無"}</p>
+      <p><span class="c-label">會員</span>：${memberText}</p>
       <p><span class="c-label">匯款後5碼</span>：${pay}</p>
       <p><span class="c-label">日期</span>：${dateSelect.options[dateSelect.selectedIndex].text}</p>
       <p><span class="c-label">時間</span>：${timeSelect.value}</p>      
@@ -767,6 +875,17 @@ function submit(){
   if (makeupEl.value === "華族彩妝") total += 1000;
   if (makeupEl.value === "公主彩妝") total += 1500;
   if (kimonoEl.checked) total += 500;
+  
+  let membership = null;
+  if(memberGirlEl.checked){
+    membership = "少女會員";
+  }
+  if(memberNobleEl.checked){
+    membership = "華族會員";
+  }
+  if(memberPrincessEl.checked){
+    membership = "公主會員";
+  }
 
   fetch(`${BACKEND}/reserve`,{
     method:"POST",
@@ -778,7 +897,8 @@ function submit(){
       hair: hairStyleEl.value,
       makeup: makeupEl.value,      
       kimono: kimonoEl.checked,   
-      photo: photoEl.checked,              
+      photo: photoEl.checked,
+      membership: membership,              
       date:dateSelect.value,
       time:timeSelect.value,
       total: total
@@ -855,14 +975,40 @@ function updatePrice() {
   /* 和服 */
   if (kimonoEl.checked) total += 500;
   
-  document.getElementById("slotDisplay").textContent =
-    total === 0 ? "--" : "$" + total.toLocaleString();
+  const hasMember =
+    memberGirlEl.checked ||
+    memberNobleEl.checked ||
+    memberPrincessEl.checked;
+
+  const slotDisplay =
+    document.getElementById("slotDisplay");
+
+  if(hasMember){
+
+    slotDisplay.style.fontSize = "14px";
+
+    slotDisplay.textContent =
+      "當日出示會員卡扣除金額";
+
+  }else{
+    slotDisplay.style.fontSize = "30px";
+
+    slotDisplay.textContent =
+      total === 0
+        ? "--"
+        : "$" + total.toLocaleString();
+
+  }
 }
 
 hairStyleEl.addEventListener("change", updatePrice);
 makeupEl.addEventListener("change", updatePrice);
 kimonoEl.addEventListener("change", updatePrice);
 photoEl.addEventListener("change", updatePrice);
+memberGirlEl.addEventListener("change", updatePrice);
+memberNobleEl.addEventListener("change", updatePrice);
+memberPrincessEl.addEventListener("change", updatePrice);
+
 updatePrice();
 
 function getDuration() {
@@ -984,6 +1130,8 @@ makeupEl.addEventListener("change", () => {
       })
       .finally(() => hideLoading());
   }
+
+
 </script>
 
 </body>
