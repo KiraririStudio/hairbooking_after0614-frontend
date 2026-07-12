@@ -935,34 +935,35 @@ function submit(){
     return data;
   })
   .then(() => {
-    
-showModal(`
-    <p style="font-size:18px; animation: pop 0.4s ease;">
-      ${hasMember
-        ? `
-          ✅ 預約成功<br>
-          請於當日出示會員卡確認折抵金額
-        `
-        : `
-          ✅ 預約成功<br>
-          總金額：$${total.toLocaleString()}
-        `
-      }
-    </p>
-    <div style="
-      font-size:12px;
-      color:var(--hint);
-      margin-top:8px;
-    ">
-      請私訊 kirariri studio 確認<br>
-      IG：kirariri_studio
-    </div>
-
-    <button onclick='closeModal(); resetForm();'>
-      確定
-    </button>
-  `);
-});
+    showModal(`
+      <p style="font-size:18px; animation: pop 0.4s ease;">
+        ${hasMember
+          ? `
+            ✅ 預約成功<br>
+            請於當日出示會員卡確認折抵金額
+          `
+          : `
+            ✅ 預約成功<br>
+            總金額：$${total.toLocaleString()}
+          `
+        }
+      </p>
+  
+      <div style="
+        font-size:13px;
+        color:#777;
+        line-height:1.6;
+        margin-top:8px;
+      ">
+        請私訊 kirariri studio 確認<br>
+        IG：kirariri_studio
+      </div>
+  
+      <button onclick='closeModal(); resetForm();'>
+        確定
+      </button>
+    `);
+  });
   .catch(err => {
     // ✅ ✅ ✅ 顯示錯誤（例如撞時段）
     showModal(`
