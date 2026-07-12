@@ -645,22 +645,28 @@ button:hover {
           return data;
       })
       .then(() => {
+.then(() => {
+    showModal(`      
+      <p style="font-size:18px; animation: pop 0.4s ease;">
+        ${hasMember
+          ? `
+            ✅ 預約成功<br>
+            請於當日出示會員卡確認折抵金額<br>
+            請私訊 kirariri studio 確認<br>
+            IG：kirariri_studio
+          `
+          : `
+            ✅ 預約成功<br>
+            總金額：$${total.toLocaleString()}<br>
+            請私訊 kirariri studio 確認<br>
+            IG：kirariri_studio
+          `
+        }
+      </p>
+      <button onclick='closeModal(); resetForm();'>確定</button>
+    `);
 
-          showModal(`
-              <p style="font-size:18px;">
-                  ✅ 會員儲值成功
-              </p>
-              <p style="font-size:12px; color: var(--hint); margin-top:8px;">
-                請私訊 kirariri studio 確認<br>
-                IG：kirariri_studio
-              </p>
-
-              <button onclick="closeModal();resetForm();">
-                  確定
-              </button>
-          `);
-
-      })
+    })
       .catch(err => {
 
           showModal(`
