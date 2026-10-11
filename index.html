@@ -419,19 +419,24 @@ button:hover {
 
 
   <div class="field">
-    <label>👤 姓名</label>
+    <label>👤 *姓名</label>
     <input id="name" placeholder="請輸入姓名">
     <div class="hint">請填寫全名以利核對</div>
   </div>
 
   <div class="field">
-    <label>📞 電話</label>
+    <label>📞 *電話</label>
     <input id="phone" placeholder="0912345678" maxlength="10">
     <div class="hint">請輸入 10 碼手機號碼</div>
   </div>
 
   <div class="field">
-    <label>💇‍♀️ 編髮</label>
+    <label>📧 *Email</label>
+    <input id="email" type="email" placeholder="example@gmail.com">
+    </div>
+
+  <div class="field">
+    <label>💇‍♀️ *編髮</label>
     <select id="hairStyle">
       <option value="" disabled selected>請選擇編髮</option>
       <option value="none">無</option>
@@ -443,7 +448,7 @@ button:hover {
   </div>
 
   <div class="field">
-    <label>💄 彩妝</label>    
+    <label>💄 *彩妝</label>    
     <select id="makeup">
       <option value="" disabled selected>請選擇彩妝</option>
       <option value="none">無</option>
@@ -475,7 +480,7 @@ button:hover {
   </div>
 
   <div class="field">
-    <label>📅 日期</label>
+    <label>📅 *日期</label>
     <select id="dateSelect">
       <option value="" disabled selected>請先選擇服務</option>
     </select>
@@ -485,7 +490,7 @@ button:hover {
   </div>
 
   <div class="field">
-    <label>⏰ 時間</label>
+    <label>⏰ *時間</label>
     <select id="timeSelect">
       <option value="" disabled selected>請先選擇日期</option>
     </select>
@@ -493,7 +498,7 @@ button:hover {
   </div>
 
   <div class="field">
-    <label>💰 匯款後5碼</label>
+    <label>💰 *匯款後5碼</label>
     <input id="paycode" placeholder="12345" maxlength="5">
     <div class="hint">請填寫轉帳完成後的帳號末 5 碼</div>
     <div class="hint">※ 會員請填寫 00000</div>
@@ -571,6 +576,7 @@ const loading = document.getElementById("loading");
 
 const nameEl = document.getElementById("name");
 const phoneEl = document.getElementById("phone");
+const emailEl = document.getElementById("email");
 const paycodeEl = document.getElementById("paycode");
 const hairStyleEl = document.getElementById("hairStyle");
 const makeupEl = document.getElementById("makeup");
@@ -638,6 +644,7 @@ function closeModal(){
 function resetForm(){
   nameEl.value = "";
   phoneEl.value = "";
+  emailEl.value = "";
   paycodeEl.value = "";
 
   // ✅ 下拉選單
@@ -770,6 +777,7 @@ function markError(el, isError){
 function prepareConfirm(){
   const name = nameEl.value.trim();
   const phone = phoneEl.value.trim();
+  const email = emailEl.value.trim();
   const pay = paycodeEl.value.trim();  
   const hair = hairStyleEl.value;
   const makeup = makeupEl.value; 
@@ -807,7 +815,7 @@ function prepareConfirm(){
 
   // ✅ 標紅欄位
   markError(nameEl, !name);
-  markError(phoneEl, !phone);
+  markError(emailEl, !email);
   markError(paycodeEl, !pay);
   markError(dateSelect, !dateSelect.value);
   markError(timeSelect, !timeSelect.value);
@@ -815,7 +823,7 @@ function prepareConfirm(){
   markError(makeupEl, makeup === "");
   
   // ✅ 基本漏填
-  if(!name || !phone || !pay || !dateSelect.value || !timeSelect.value || hair === "" || makeup === ""){
+  if(!name || !email || !pay || !dateSelect.value || !timeSelect.value || hair === "" || makeup === ""){
     hasError = true;
   }
   
@@ -832,6 +840,21 @@ function prepareConfirm(){
     markError(phoneEl, true);
     showModal("<p>電話需為10碼數字</p><button onclick='closeModal()'>確定</button>");
     return;
+  }
+
+  // ✅ email 格式
+  if(
+    email &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ){
+      markError(emailEl, true);
+  
+      showModal(
+        "<p>Email 格式錯誤</p>" +
+        "<button onclick='closeModal()'>確定</button>"
+      );
+  
+      return;
   }
   
   // ✅ 匯款碼
@@ -857,7 +880,8 @@ function prepareConfirm(){
     <p style="font-weight:bold">請確認預約資訊</p>
     <div style="text-align:left; display:inline-block;">
       <p><span class="c-label">姓名</span>：${name}</p>
-      <p><span class="c-label">電話</span>：${phone}</p>            
+      <p><span class="c-label">電話</span>：${phone}</p> 
+      <p><span class="c-label">Email</span>：${email}</p>
       <p><span class="c-label">編髮</span>：${hairText}</p>
       <p><span class="c-label">彩妝</span>：${makeupText}</p>     
       <p><span class="c-label">和服租借</span>：${kimono ? "有" : "無"}</p>
@@ -921,6 +945,7 @@ function submit(){
     body:JSON.stringify({      
       name:nameEl.value,
       phone:phoneEl.value,
+      email:emailEl.value,
       paycode:paycodeEl.value,
       hair: hairStyleEl.value,
       makeup: makeupEl.value,      
@@ -1121,6 +1146,7 @@ makeupEl.addEventListener("change", () => {
 [
   nameEl,
   phoneEl,
+  emailEl,
   paycodeEl,
   hairStyleEl,
   makeupEl,
