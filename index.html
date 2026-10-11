@@ -881,7 +881,12 @@ function prepareConfirm(){
     <div style="text-align:left; display:inline-block;">
       <p><span class="c-label">姓名</span>：${name}</p>
       <p><span class="c-label">電話</span>：${phone}</p> 
-      <p><span class="c-label">Email</span>：${email}</p>
+      <p>
+        <span class="c-label">Email</span>：
+        <span style="word-break:break-all;">
+          ${email}
+        </span>
+      </p>      
       <p><span class="c-label">編髮</span>：${hairText}</p>
       <p><span class="c-label">彩妝</span>：${makeupText}</p>     
       <p><span class="c-label">和服租借</span>：${kimono ? "有" : "無"}</p>
