@@ -650,6 +650,11 @@ function resetForm(){
   // ✅ 下拉選單
   hairStyleEl.value = "";
   makeupEl.value = "";
+  
+  makeupEl.disabled = false;
+  makeupEl.style.opacity = "1";
+  isAutoSetMakeup = false;
+  hasShownHairOnlyHint = false;
 
   // ✅ checkbox
   kimonoEl.checked = false;
